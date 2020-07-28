@@ -4,8 +4,12 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import 'antd/dist/antd.css';
 
+import wrapper from '../store/configureStore';
+
 const App = ({ Component }) => {
     return (
+        // next 6버전 이후로는
+        // 리덕스 사용시 알아서 provider로 감싸주기 때문에 감싸줄 필요없음
         <>
             <Head>
                 <title>NodeBird</title>
@@ -19,4 +23,4 @@ App.propTypes = {
     component: PropTypes.elementType.isRequired,
 }
 
-export default App;
+export default wrapper.withRedux(App);
