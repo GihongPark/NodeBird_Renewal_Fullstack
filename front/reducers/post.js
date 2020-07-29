@@ -5,7 +5,7 @@ export const initialState = {
         id: 1,
         nickname: '제로초',
       },
-      content: '첫 번째 게시글',
+      content: '첫 번째 게시글 #해시태그 #익스프레스',
       Images: [{
         src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726',
       }, {
@@ -24,38 +24,103 @@ export const initialState = {
         },
         content: '얼른 사고싶어요~',
       }]
-    }],
-    imagePaths: [],
-    postAdded: false,
-  };
+  }],
+  imagePaths: [],
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: null,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
+};
 
-const ADD_POST = 'ADD_POST';
-export const addPost = {
-    type: ADD_POST,
-}
+export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
+export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
+export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
+export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
+export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
+export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
+export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
+
+export const addPost = (data) => ({
+    type: ADD_POST_REQUEST,
+    data,
+})
+
+export const addComment = (data) => ({
+  type: ADD_COMMENT_REQUEST,
+  data,
+})
 
 const dummyPost = {
-    id: 2,
-    content: '더미데이터입니다.',
-    User: {
-      id: 1,
-      nickname: '제로초',
-    },
-    Images: [],
-    Comments: [],
-  };
+  id: 2,
+  content: '더미데이터입니다.',
+  User: {
+    id: 1,
+    nickname: '제로초',
+  },
+  Images: [],
+  Comments: [],
+};
 
 const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case ADD_POST:
-            return {
-                ...state,
-                mainPosts: [dummyPost, ...state.mainPosts],
-                postAdded: true,
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+      case ADD_POST_REQUEST:
+          return {
+            ...state,
+            addPostLoading: true,
+            addPostDone: false,
+            addPostError: false,
+          };
+      case ADD_POST_SUCCESS:
+          return {
+              ...state,
+              mainPosts: [dummyPost, ...state.mainPosts],
+              addPostLoading: false,
+              addPostDone: true,
+          };
+      case ADD_POST_FAILURE:
+          return {
+              ...state,
+              addPostLoading: false,
+              addPostError: action.error,
+          };
+      case ADD_COMMENT_REQUEST:
+          return {
+              ...state,
+              addCommentLoading: true,
+              addCommentDone: false,
+              addCommentError: false,
+          };
+      case ADD_COMMENT_SUCCESS:
+          return {
+              ...state,
+              addCommentLoading: false,
+              addCommentDone: true,
+          };
+      case ADD_COMMENT_FAILURE:
+          return {
+              ...state,
+              addCommentLoading: false,
+              addCommentError: action.error,
+          }
+      default:
+          return state;
+  }
 };
 
 export default reducer;
