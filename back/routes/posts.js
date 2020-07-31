@@ -22,7 +22,12 @@ router.get('/', async (req, res, next) => {  // GET /posts
         include: [{
           model: User,
           attributes: ['id', 'nickname'],
+          order: [['createAt', 'DESC']],
         }]
+      }, {
+        model: User,
+        as: 'Likers',
+        attributes: ['id'],
       }],
     });
     res.status(200).json(posts);
