@@ -7,7 +7,6 @@ import { CHANGE_NICKNAME_REQUEST } from '../reducers/user';
 
 const NicknameEditForm = () => {
   const { me } = useSelector((state) => state.user);
-  console.log(me.nickname);
   const [nickname, onChangeNickname] = useInput(me?.nickname || '');
   const dispatch = useDispatch();
 
