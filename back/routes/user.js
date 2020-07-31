@@ -84,6 +84,22 @@ router.post('/logout', isLoggedIn, (req, res) => {
   res.status(200).send('ok');
 });
 
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
+  try {
+    await User.update({
+      // 어떤걸 수정할지
+      nickname: req.body.nickname,
+    }, {
+      // 누구꺼
+      where: { id: req.user.id },
+    });
+    res.status(200).json({ nickname: req.body.nickname });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post('/', isNotLoggedIn, async (req, res, next) => {  // POST /user/
   try {
     // 기존 사용자 찾기
