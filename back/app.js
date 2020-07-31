@@ -18,6 +18,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const path = require('path');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
@@ -41,6 +42,9 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,  // 쿠키 전달을 위한 설정
 }));
+
+// localhost:3065/~
+app.use('/', express.static(path.join(__dirname, 'uploads')));
 // 프론트에서 받은 데이터를 req.body안에 넣어주는 역할을 한다
 // 라우터보다 위에있어야함
 app.use(express.json());  // json 데이터
