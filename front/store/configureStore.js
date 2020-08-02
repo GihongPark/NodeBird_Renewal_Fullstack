@@ -19,6 +19,7 @@ const configureStore = () => {
     ? compose(applyMiddleware(...middleware))
     : composeWithDevTools(applyMiddleware(...middleware));
   const store = createStore(reducer, enhancer);
+  // 서버사이드렌더링을 하기 위해 미들웨어 장착
   store.sagaTask = sagaMiddleware.run(rootSaga);
   return store;
 };

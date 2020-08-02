@@ -10,9 +10,6 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {  // GET /user
   try {
     if (req.user) {
-      const user = await User.findOne({
-        where: { id: req.user.id }
-      });
       const fullUserWithoutPassword = await User.findOne({
         where: { id: req.user.id },
         attributes: {
@@ -32,6 +29,39 @@ router.get('/', async (req, res, next) => {  // GET /user
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get('/:userId', async (req, res, next) => {  // GET /user/1
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: {
+        exclude: ['password']
+      },
+      include: [{
+        model: Post,
+        attributes: ['id'],
+      }, {
+        model: User,
+        as: 'Followings',
+      }, {
+        model: User,
+        as: 'Followers',
+      }]
+    })
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Post.length;
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json('존재하지 않는 사용자입니다.');
     }
   } catch (error) {
     console.error(error);
