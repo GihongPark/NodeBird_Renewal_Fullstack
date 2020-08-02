@@ -19,6 +19,8 @@ const Profile = () => {
   const [followingsLimit, setFollowingsLimit] = useState(3);
   const [followersLimit, setFollowersLimit] = useState(3);
 
+  // swr에서 3번째 인자로 데이터를 넣어 ssr로 사용 가능하다
+  // const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers?limit=${followersLimit}`, fetcher, { initialData });
   const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers?limit=${followersLimit}`, fetcher);
   const { data: followingsData, error: followingError } = useSWR(`http://localhost:3065/user/followings?limit=${followingsLimit}`, fetcher);
 
@@ -68,6 +70,11 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   context.store.dispatch(END);
   console.log('getServerSideProps end');
   await context.store.sagaTask.toPromise();
+
+  // 서버에서 받은 데이터를 props에 넣어 리턴하면
+  // 컴포넌트에서 props로 받을 수 있다
+  // 이를 이용해서 swr에서도 ssr이 가능하다
+  // return {props: { data: 123 }};
 });
 
 export default Profile;
