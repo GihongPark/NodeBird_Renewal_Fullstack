@@ -37,6 +37,44 @@ router.get('/', async (req, res, next) => {  // GET /user
   }
 });
 
+router.get('/followers', isLoggedIn, async (req, res, next) => { // GET /user/followers
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }});
+    if (!user) {
+      res.status(403).send('없는 사람을 언팔로우하려고 하시네요?');
+    }
+    const followers = await user.getFollowers({
+      attributes: ['id', 'nickname'],
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get('/followings', isLoggedIn, async (req, res, next) => { // GET /user/followings
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }});
+    if (!user) {
+      res.status(403).send('없는 사람을 언팔로우하려고 하시네요?');
+    }
+    const followings = await user.getFollowings({
+      attributes: ['id', 'nickname'],
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 와일드카드 - 미들웨어는 위에서 아래로 왼쪽에서 오른쪽으로 동작한다
+// 따라서 url를 params로 받는 애들이 있을경우 이후 url을 params로 인식한다
+// 그렇기 때문에 와일드카드가 존재하는 경우 다른 api보다 밑에 둬야한다.
+// ex) GET /user/follower 에서 follower를 params로 인식할 수 있다
 router.get('/:userId', async (req, res, next) => {  // GET /user/1
   try {
     const fullUserWithoutPassword = await User.findOne({
@@ -212,34 +250,6 @@ router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => { // DE
     }
     await user.removeFollowings(req.user.id);
     res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.get('/followers', isLoggedIn, async (req, res, next) => { // GET /user/followers
-  try {
-    const user = await User.findOne({ where: { id: req.user.userId }});
-    if (!user) {
-      res.status(403).send('없는 사람을 언팔로우하려고 하시네요?');
-    }
-    const followers = await user.getFollowers(req.user.id);
-    res.status(200).json(followers);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.get('/followings', isLoggedIn, async (req, res, next) => { // GET /user/followings
-  try {
-    const user = await User.findOne({ where: { id: req.params.userId }});
-    if (!user) {
-      res.status(403).send('없는 사람을 언팔로우하려고 하시네요?');
-    }
-    const followings = await user.getFollowings(req.user.id);
-    res.status(200).json(followings);
   } catch (error) {
     console.error(error);
     next(error);
