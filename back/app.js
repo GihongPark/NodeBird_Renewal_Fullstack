@@ -48,7 +48,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'));
 }
 app.use(cors({
-  origin: ['http://localhost:3000', 'nodebird.com'],
+  origin: ['http://localhost:3000', 'nodebird.com', 'http://3.35.8.40'],
   credentials: true,  // 쿠키 전달을 위한 설정
 }));
 
